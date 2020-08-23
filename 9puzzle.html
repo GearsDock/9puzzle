@@ -41,6 +41,11 @@
                 table.appendChild(tr);//作成したtrをtableに挿入
             }
 
+            //1,000回適当な所をクリックした時の動作。これをスタートボタンを押した時に実行される様にする。⇨OK
+            for (var i = 0 ; i < 100 ; i++) { //Math.floor() メソッドは、引数として与えた数以下の最大の整数を返す。
+                click({ srcElement: {index: Math.floor(Math.random() * 3)}})//Math.random()関数は、0–1（0以上、1未満）の範囲で浮動小数点の擬似乱数を返す
+            }
+
         }
 
         function click(e) { //タイルがクリックされると呼び出される。
@@ -56,11 +61,13 @@
                 swap(i, i + 1);
             }
 
-            //***indexとvalueのマスが全部一致していたら、ゲーム完了とし、タイマー完了、文字を出す。
-            for (var i = 0 ; i < 3 ; i++) {
-              if (tiles[i].index == tiles[i].value)
-             stopTimer()
+            //***indexとvalueのマスが全部一致していたら、ゲーム完了とし、タイマー完了、完了の文字を出す。
+            var flg = false;
+            for (var i = 0 ; i < 9 ; i++) {
+              if (tiles[i].index != tiles[i].value)
+                flg = true;
             }
+            if(!flg) stopTimer();
         }
         //valueの値は変更しているが、indexは変更していない。
         function swap(i, j) {
@@ -79,10 +86,7 @@
                 clearInterval(timerId); //タイマーを開始する時に、最初にタイマーをクリアにする。一回止めて、再度動き出す。
                 timerId = setInterval(tick, 10);
 
-                //1,000回適当な所をクリックした時の動作。これをスタートボタンを押した時に実行される様にする。⇨OK
-                for (var i = 0 ; i < 100 ; i++) { //Math.floor() メソッドは、引数として与えた数以下の最大の整数を返す。
-                    click({ srcElement: {index: Math.floor(Math.random() * 3)}})//Math.random()関数は、0–1（0以上、1未満）の範囲で浮動小数点の擬似乱数を返す
-                }
+
             }
             function stopTimer() {
                 clearInterval(timerId);
