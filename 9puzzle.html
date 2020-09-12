@@ -41,10 +41,6 @@
                 table.appendChild(tr);//作成したtrをtableに挿入
             }
 
-            //1,000回適当な所をクリックした時の動作。これをスタートボタンを押した時に実行される様にする。⇨OK
-            for (var i = 0 ; i < 100 ; i++) { //Math.floor() メソッドは、引数として与えた数以下の最大の整数を返す。
-                click({ srcElement: {index: Math.floor(Math.random() * 3)}})//Math.random()関数は、0–1（0以上、1未満）の範囲で浮動小数点の擬似乱数を返す
-            }
 
         }
 
@@ -65,9 +61,9 @@
             var flg = false;
             for (var i = 0 ; i < 9 ; i++) {
               if (tiles[i].index != tiles[i].value)
-                flg = true;
+                flg = true; //一箇所でのindexとvalueで違う場所があったらtureになる。上書きされる仕組み。
             }
-            if(!flg) stopTimer();
+            if(!flg) stopTimer(); //!はif文がfalseの時、if文が実行される様にする。
         }
         //valueの値は変更しているが、indexは変更していない。
         function swap(i, j) {
@@ -81,6 +77,10 @@
         //NaN JSで定義されている Not a number
             var timerId = NaN, count = 0;
             function startTimer() {
+              //1,000回適当な所をクリックした時の動作。これをスタートボタンを押した時に実行される様にする。⇨OK
+              for (var i = 0 ; i < 100 ; i++) { //Math.floor() メソッドは、引数として与えた数以下の最大の整数を返す。
+                  click({ srcElement: {index: Math.floor(Math.random() * 3)}})//Math.random()関数は、0–1（0以上、1未満）の範囲で浮動小数点の擬似乱数を返す
+              }
               //tick()だと関数の結果を引数に渡す。tickだと関数そのものを渡し、後から実行する。
               //1000は１秒ごとにtickを呼び出すという意味、2秒だと2,000
                 clearInterval(timerId); //タイマーを開始する時に、最初にタイマーをクリアにする。一回止めて、再度動き出す。
@@ -101,7 +101,7 @@
 <body onload="init()">
     <table id="table"></table>
     <h2>
-      <button onclick="startTimer()">スタート</button> <!--***スタートボタンを押せるのは１度だけにする。-->
+      <button onclick="startTimer();disabled = true;">スタート</button> <!--***スタートボタンを押せるのは１度だけにする。-->
       <button onclick="stopTimer()">ストップ</button>
     </h2>
     <h2 id="counter"></h2>
