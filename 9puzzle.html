@@ -3,25 +3,14 @@
 <head>
     <title>9 puzzle</title>
     <meta charset="UTF-8">
-    <style>
-        .tile {
-            width: 70px;
-            height: 70px;
-            border: 1px solid blue;
-            border-radius: 10px;
-            text-align: center;
-            font-size: 36px;
-            background-color: white;
-            box-shadow: rgb(128, 128, 128) 5px 5px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+
+
     <script>
-        //"use strict"; //記述することで、より厳密なエラーチェックが行われる。
 
-        // 広域変数
         var tiles = [];
+        var beginningGame = false;
 
-        // 初期化関数
         function init() {
             var table = document.getElementById("table"); //73行目 tableタグへの参照を取得
 
@@ -31,7 +20,7 @@
                     var td = document.createElement("td"); //行に挿入するためのタイルを作成
                     var index = i * 3 + j;
                     td.className = "tile"; //７行目のセレクターのクラス名称を付与
-                    td.index = index; //右辺のindexは32行目。orderはタイルの並び順。 50行目のindex。.indexの表記を変えるとvalueでエラーになる。
+                    td.index2 = index; //右辺のindexは32行目。orderはタイルの並び順。 36,51,70行目のindex。
                     td.value = index; //右辺のindexは32行目。valueはタイルに描画されている数値。60行目のvalue。.valueはvalueの表記から変えても良い
                     td.textContent = index == 0 ? "" : index;
                     td.onclick = click;
@@ -45,7 +34,9 @@
         }
 
         function click(e) { //タイルがクリックされると呼び出される。
-            var i = e.srcElement.index; //クリックしたファイルのindexを取得。34行目のindex
+          if(!beginningGame) return; //falseだったら、終了。
+
+            var i = e.srcElement.index2; //クリックしたファイルのindexを取得。34行目のindex
             //上下左右のどこかに空のファイル(valueプロパティが0のタイル)があった場合、それらのvalueを入れ替える。
             if (i - 3 >= 0 && tiles[i - 3].value == 0) { //上にタイルが存在。且つ tiles[i - 4].valueはクリックしたタイルからindexを−3した、タイルの値が０だった時
                 swap(i, i - 3); //63行目に定義。
@@ -60,7 +51,7 @@
             //***indexとvalueのマスが全部一致していたら、ゲーム完了とし、タイマー完了、完了の文字を出す。
             var flg = false;
             for (var i = 0 ; i < 9 ; i++) {
-              if (tiles[i].index != tiles[i].value)
+              if (tiles[i].index2 != tiles[i].value)
                 flg = true; //一箇所でのindexとvalueで違う場所があったらtureになる。上書きされる仕組み。
             }
             if(!flg) stopTimer(); //!はif文がfalseの時、if文が実行される様にする。
@@ -77,9 +68,10 @@
         //NaN JSで定義されている Not a number
             var timerId = NaN, count = 0;
             function startTimer() {
+              beginningGame = true;
               //1,000回適当な所をクリックした時の動作。これをスタートボタンを押した時に実行される様にする。⇨OK
-              for (var i = 0 ; i < 100 ; i++) { //Math.floor() メソッドは、引数として与えた数以下の最大の整数を返す。
-                  click({ srcElement: {index: Math.floor(Math.random() * 3)}})//Math.random()関数は、0–1（0以上、1未満）の範囲で浮動小数点の擬似乱数を返す
+              for (var i = 0 ; i < 1000 ; i++) { //Math.floor() メソッドは、引数として与えた数以下の最大の整数を返す。
+                  click({ srcElement: {index2: Math.floor(Math.random() * 8)}})//Math.random()関数は、0–1（0以上、1未満）の範囲で浮動小数点の擬似乱数を返す
               }
               //tick()だと関数の結果を引数に渡す。tickだと関数そのものを渡し、後から実行する。
               //1000は１秒ごとにtickを呼び出すという意味、2秒だと2,000
@@ -96,14 +88,20 @@
                 document.getElementById("counter").textContent = count/100;
             }
 
+            function redo() {
+                location.reload(true);
+            }
+
     </script>
 </head>
 <body onload="init()">
+  <div class ="wrapper">
     <table id="table"></table>
-    <h2>
-      <button onclick="startTimer();disabled = true;">スタート</button> <!--***スタートボタンを押せるのは１度だけにする。-->
-      <button onclick="stopTimer()">ストップ</button>
-    </h2>
-    <h2 id="counter"></h2>
+    <div>
+      <button class="start-button" onclick="startTimer();disabled = true;">Start</button>
+      <button class="redo-button" onclick="redo()">Redo</button>
+    </div>
+    <h2 class="count" id="counter"></h2>
+  </div>
 </body>
 </html>
